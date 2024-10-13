@@ -86,3 +86,88 @@ The size of your dataset
 The potential for introducing bias or losing information
 
 It's often a good practice to experiment with different encoding techniques and evaluate their impact on your model's performance.
+
+
+...............................................
+..............................................
+
+import pandas as pd
+from sklearn.preprocessing import OneHotEncoder, MinMaxScaler, StandardScaler
+
+# Sample data
+data = pd.DataFrame({
+    'Category': ['A', 'B', 'C', 'A', 'B'],
+    'Value1': [1, 2, 3, 4, 5],
+    'Value2': [10, 20, 30, 40, 50]
+})
+
+# One-Hot Encoding for categorical data
+onehot = OneHotEncoder(sparse=False)
+categorical_encoded = onehot.fit_transform(data[['Category']])
+categorical_df = pd.DataFrame(categorical_encoded, columns=onehot.get_feature_names(['Category']))
+
+# MinMaxScaler for numerical data
+minmax_scaler = MinMaxScaler()
+minmax_scaled = minmax_scaler.fit_transform(data[['Value1', 'Value2']])
+minmax_df = pd.DataFrame(minmax_scaled, columns=['Value1_MinMax', 'Value2_MinMax'])
+
+# StandardScaler for numerical data
+standard_scaler = StandardScaler()
+standard_scaled = standard_scaler.fit_transform(data[['Value1', 'Value2']])
+standard_df = pd.DataFrame(standard_scaled, columns=['Value1_Standard', 'Value2_Standard'])
+
+# Combine all
+result = pd.concat([data, categorical_df, minmax_df, standard_df], axis=1)
+print(result)
+
+One-Hot Encoding:
+
+Used for: Categorical variables
+Purpose: Converts categorical variables into a form that could be provided to ML algorithms to do a better job in prediction
+When to use: When you have categorical variables that don't have an inherent order (nominal variables)
+Example: In our code, we used it for the 'Category' column
+
+
+MinMaxScaler:
+
+Used for: Numerical variables
+Purpose: Scales features to a fixed range, usually 0 to 1
+When to use:
+
+When you want to preserve zero values in sparse data
+When the distribution of your data is not Gaussian or unknown
+When you need values in a bounded interval
+
+
+Example: We applied it to 'Value1' and 'Value2'
+
+
+StandardScaler:
+
+Used for: Numerical variables
+Purpose: Standardizes features by removing the mean and scaling to unit variance
+When to use:
+
+When your data follows a Gaussian distribution
+When you're using algorithms that assume data is normally distributed (e.g., Linear Regression, Logistic Regression, Neural Networks)
+
+
+Example: We also applied it to 'Value1' and 'Value2' for comparison
+
+
+
+Key points to remember:
+
+Apply One-Hot Encoding to categorical variables before applying any scaling.
+Choose between MinMaxScaler and StandardScaler based on your data distribution and the requirements of your machine learning algorithm.
+You can use both One-Hot Encoding and scaling in the same dataset, but on different columns.
+
+A typical workflow might look like this:
+
+Identify categorical and numerical columns in your dataset.
+Apply One-Hot Encoding to categorical columns.
+Choose an appropriate scaler (MinMaxScaler or StandardScaler) for numerical columns based on your data and model requirements.
+Apply the chosen scaler to the numerical columns.
+Combine the encoded categorical data and scaled numerical data.
+
+
