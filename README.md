@@ -87,3 +87,42 @@ ax = fig.add_subplot(111)
 plt.boxplot(results,showmeans=True)
 ax.set_xticklabels(names)
 plt.show()
+
+
+
+# Missing Value:- mean, modian and mode for categorical 
+SimpleImputer(strategy ='mean')
+fillna(method='bfill,fill',axis=0/1)
+select_dtypes(include='float64').columns
+OneHotEncoding -> categorical to Numerical 
+OneHotEncoding(drop='first')
+pd.get_dummies(drop='firsst')
+
+LabelEncoding -> for nomial 
+OrdinalEncoding -> for ordinal
+OrdinalEncoding(categories =data)
+pd.Categorical(df['col']).codes
+
+IQR = Q3-Q1 
+min_val = Q1- 1.5(IQR)
+max_val = Q3 + 1.5(IQR)
+
+Z-score 
+min_val = x(mean)-3 * x(std) 
+max_val = x(mean) + 3 * x(std)
+
+z = x-x(mean)/x(std) 
+
+# Feature Scalling:- 
+StandardScaler->Standardization -> outlier have not remove but magniuted changed
+x(new) = x-x(mean)/x(std)
+
+# Normalization:- 
+MinMaxScaler   
+x(new) = x-min(x)/max(x)-min(x)
+
+#Function Transformer
+A FunctionTransformer forwards its X (and optionally y) arguments to a user-defined function or function object and returns the result of this function. This is useful for stateless transformations such as taking the log of frequencies, doing custom scaling, etc.
+
+FunctionTransformer(func=None, inverse_func=None, validate=None, accept_sparse=False, pass_y='deprecated', check_inverse=True, kw_args=None, inv_kw_args=None)
+FunctionTransformer(func=np.log1p)
