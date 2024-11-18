@@ -122,16 +122,16 @@ MinMaxScaler
 x(new) = x-min(x)/max(x)-min(x)
 
 #Function Transformer
-A FunctionTransformer forwards its X (and optionally y) arguments to a user-defined function or function object and returns the result of this function. This is useful for stateless transformations such as taking the log of frequencies, doing custom scaling, etc.
+A FunctionTransformer forwards its X (and optionally y) arguments to a user-defined function or function object and returns the result of this function. This is useful for stateless transformations such as taking the log of frequencies, doing custom scaling, etc. <br>
 
-FunctionTransformer(func=None, inverse_func=None, validate=None, accept_sparse=False, pass_y='deprecated', check_inverse=True, kw_args=None, inv_kw_args=None)
-FunctionTransformer(func=np.log1p)
+FunctionTransformer(func=None, inverse_func=None, validate=None, accept_sparse=False, pass_y='deprecated', check_inverse=True, kw_args=None, inv_kw_args=None) <br>
+FunctionTransformer(func=np.log1p) <br>
 
 #Backward & Forward elimination:- 
 
-from mlxtend.feature_selection import SequentialFeatureSelector 
-SequentialFeatureSelector(estimator, *, n_features_to_select='auto', tol=None, direction='forward', scoring=None, cv=5, n_jobs=None)
+from mlxtend.feature_selection import SequentialFeatureSelector <br>
+SequentialFeatureSelector(estimator, *, n_features_to_select='auto', tol=None, direction='forward', scoring=None, cv=5, n_jobs=None) <br>
 
-PolynomialFeature(degree=2)
+PolynomialFeature(degree=2) <br>
 
 
