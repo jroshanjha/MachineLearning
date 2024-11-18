@@ -132,3 +132,6 @@ FunctionTransformer(func=np.log1p)
 from mlxtend.feature_selection import SequentialFeatureSelector 
 SequentialFeatureSelector(estimator, *, n_features_to_select='auto', tol=None, direction='forward', scoring=None, cv=5, n_jobs=None)
 
+PolynomialFeature(degree=2)
+
+
