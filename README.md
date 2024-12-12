@@ -134,4 +134,136 @@ SequentialFeatureSelector(estimator, *, n_features_to_select='auto', tol=None, d
 
 PolynomialFeature(degree=2) <br>
 
+## .....................................
+## ....................................
+
+
+from sklearn.model_selection import train_test_split, cross_val_score, GridSearchCV
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
+import numpy as np
+import pandas as pd
+
+# Preprocessing and Regularization Techniques
+
+# 1. Basic Random Forest with L1/L2 Regularization
+rf_l1_params = {
+    'min_samples_split': [2, 5, 10],
+    'min_samples_leaf': [1, 2, 4],
+    'max_depth': [None, 10, 20, 30],
+    'max_features': ['sqrt', 'log2'],
+    'ccp_alpha': [0.0, 0.001, 0.01]  # Cost Complexity Pruning (built-in regularization)
+}
+
+# Create a pipeline with scaling and Random Forest
+rf_pipeline = Pipeline([
+    ('scaler', StandardScaler()),
+    ('classifier', RandomForestClassifier(random_state=42))
+])
+
+# GridSearchCV for hyperparameter tuning and regularization
+grid_search = GridSearchCV(
+    estimator=rf_pipeline,
+    param_grid={
+        'classifier__' + k: v for k, v in rf_l1_params.items()
+    },
+    cv=5,
+    scoring='accuracy',
+    n_jobs=-1
+)
+
+# Fit GridSearch
+grid_search.fit(X_train, y_train)
+
+# Best model and parameters
+best_model = grid_search.best_estimator_
+best_params = grid_search.best_params_
+
+print("Best Parameters:", best_params)
+print("Best Cross-validated Score:", grid_search.best_score_)
+
+# 2. Ensemble Regularization Techniques
+# Combining multiple regularization approaches
+
+# Bagging with different regularization parameters
+def create_regularized_models():
+    models = [
+        RandomForestClassifier(
+            n_estimators=100,
+            max_depth=depth,
+            min_samples_split=split,
+            min_samples_leaf=leaf,
+            max_features=features,
+            random_state=42
+        )
+        for depth in [None, 10, 20]
+        for split in [2, 5, 10]
+        for leaf in [1, 2]
+        for features in ['sqrt', 'log2']
+    ]
+    return models
+
+# Voting Classifier for ensemble regularization
+from sklearn.ensemble import VotingClassifier
+
+# Create an ensemble of regularized models
+ensemble_models = create_regularized_models()
+voting_classifier = VotingClassifier(
+    estimators=[(f'model_{i}', model) for i, model in enumerate(ensemble_models)],
+    voting='soft'
+)
+
+# Fit and evaluate voting classifier
+voting_classifier.fit(X_train, y_train)
+voting_score = voting_classifier.score(X_test, y_test)
+print("\nEnsemble Voting Classifier Score:", voting_score)
+
+# 3. Feature Selection with Regularization
+from sklearn.feature_selection import SelectFromModel
+
+# Feature selection with L1 regularization
+selector = SelectFromModel(
+    RandomForestClassifier(
+        n_estimators=100, 
+        max_depth=10, 
+        random_state=42
+    ), 
+    prefit=False
+)
+
+# Create a pipeline with feature selection and classifier
+feature_selection_pipeline = Pipeline([
+    ('selector', selector),
+    ('classifier', RandomForestClassifier(random_state=42))
+])
+
+# Grid search with feature selection
+feature_selection_grid = GridSearchCV(
+    estimator=feature_selection_pipeline,
+    param_grid={
+        'selector__max_features': [None, 'sqrt', 'log2'],
+        'classifier__n_estimators': [50, 100, 200],
+        'classifier__max_depth': [None, 10, 20]
+    },
+    cv=5,
+    scoring='accuracy'
+)
+
+feature_selection_grid.fit(X_train, y_train)
+print("\nFeature Selection Best Score:", feature_selection_grid.best_score_)
+print("Feature Selection Best Parameters:", feature_selection_grid.best_params_)
+
+# Bonus: Regularization Performance Comparison
+regularization_methods = {
+    'Basic Random Forest': RandomForestClassifier(random_state=42),
+    'GridSearch Regularized': best_model,
+    'Voting Ensemble': voting_classifier,
+    'Feature Selection': feature_selection_grid.best_estimator_
+}
+
+print("\nRegularization Method Comparison:")
+for name, model in regularization_methods.items():
+    cv_scores = cross_val_score(model, X_train, y_train, cv=5)
+    print(f"{name}: {cv_scores.mean():.4f} (+/- {cv_scores.std() * 2:.4f})")
 
