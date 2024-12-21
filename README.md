@@ -267,3 +267,14 @@ for name, model in regularization_methods.items():
     cv_scores = cross_val_score(model, X_train, y_train, cv=5)
     print(f"{name}: {cv_scores.mean():.4f} (+/- {cv_scores.std() * 2:.4f})")
 
+
+## Testing ML model 
+
+li= []
+for i in range(len(X_test)):
+    #print(X_test.iloc[i].values)
+    li.append(model.predict([X_test.iloc[i].values]))
+
+for i in li:
+    print(i[0])
+
